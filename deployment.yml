@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: DRONE_REPO_NAME-deployment
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: DRONE_REPO_NAME-deployment
+    spec:
+      containers:
+      - name: DRONE_REPO_NAME
+        image: gre.docker.target.com/DRONE_REPO_NAME:DEPLOY_VERSION
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 500m
+            memory: 800Mi
+          requests:
+            cpu: 50m
+            memory: 400Mi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          periodSeconds: 5
+          failureThreshold: 3
+        ports:
+        - containerPort: 80
+        env:
+        - name: NODE_ENV
+          value: prod
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate

@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: DRONE_REPO_NAME-ingress
+  namespace: guest-reliability-engineering
+  labels:
+    name: DRONE_REPO_NAME-ingress
+spec:
+  rules:
+  - host: DRONE_REPO_NAME.us-central-1.core.k8s.tgt
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: DRONE_REPO_NAME-service
+          servicePort: 80
+          #changing from 1ttc -> 1tte, the address I want to listen for,
+          # TODO: create test-tte folders and change drone to reflect that change
+
+  - host: DRONE_REPO_NAME.us-central-1ttc.core.k8s.tgt
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: DRONE_REPO_NAME-service
+          servicePort: 80
